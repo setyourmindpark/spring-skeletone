@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<context:component-scan base-package="service" />
+
+	<beans:bean id="messageSourceJob"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<beans:property name="basenames">
+			<beans:list>
+				<beans:value>classpath:/service/properties/job</beans:value>
+			</beans:list>
+		</beans:property>
+		<beans:property name="cacheSeconds" value="0" />
+		<beans:property name="defaultEncoding" value="UTF-8" />
+	</beans:bean>
+	<beans:bean id="messageSourceAccessorJob" class="org.springframework.context.support.MessageSourceAccessor">
+		<beans:constructor-arg ref="messageSourceJob"/>
+	</beans:bean>
+	<beans:bean id="messageJob" class="service.util.MessageUtil">
+		<beans:property name="messageSourceAccessor" ref="messageSourceAccessorJob"></beans:property>
+	</beans:bean>
+    
+    <context:annotation-config />
+	<aop:aspectj-autoproxy />
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+        
+    <beans:bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<beans:property name="dataSource" ref="dataSource-mysql" />
+		<beans:property name="configLocation" value="classpath:/service/config/MapperConfig.xml" />
+		<beans:property name="mapperLocations" value="classpath:/**/*_SQL.xml" />
+	</beans:bean>
+	
+	<beans:bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<beans:constructor-arg ref="sqlSessionFactory" />
+	</beans:bean>
+
+	<beans:bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		p:dataSource-ref="dataSource-mysql" />
+	
+</beans:beans>
