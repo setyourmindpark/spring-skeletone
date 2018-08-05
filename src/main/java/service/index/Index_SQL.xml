@@ -3,7 +3,7 @@
 <mapper namespace="service.index">
 	
 	<select id="now" resultType="queryMap">
-		SELECT NOW() AS NOW FROM DUAL
+		SELECT DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') AS NOW FROM DUAL
 	</select>
 	
 </mapper>

@@ -1,7 +1,7 @@
 package service.index;
 
-import common.map.QueryMap;
+import java.util.Map;
 
 public interface IndexService {
-	public QueryMap now();
+	public Map<String,String> now();
 }

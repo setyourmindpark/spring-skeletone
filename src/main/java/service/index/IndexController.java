@@ -7,13 +7,15 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import service.util.MessageUtil;
 
-@RestController
+@Controller
+@RequestMapping("/")
 public class IndexController {
 	
 	protected static Logger logger = LoggerFactory.getLogger(IndexController.class);
@@ -21,20 +23,21 @@ public class IndexController {
 	@Resource(name = "indexService")
 	private IndexService indexService;
 	
-	/**
-	 * test api
-	 */
-	@RequestMapping(value= "/", method = RequestMethod.GET)	
-	public Map<String,String> index() {		
+	@RequestMapping(value= "/", method = RequestMethod.GET)
+	public String index() {
+		return "index";
+	}
+	
+	@RequestMapping(value= "/hello", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,String> hello() {		
 		
-		// test
-//		String hello = MessageUtil.getMessage("hello");
-//		System.out.println(hello);
-//		
-//		Map queryMap = indexService.now();
-//		System.out.println(queryMap.get("now"));		
+		String message = MessageUtil.getMessage("hello");
+		logger.info("hello " + message);
 		
-		logger.info("hello!");
+//		Map<String,String> queryMap = indexService.now();
+//		String now = queryMap.get("now");
+//		logger.info(now);
 		
 		Map<String,String> data = new HashMap<String,String>();
 		data.put("hello", "world");		
